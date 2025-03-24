@@ -1,6 +1,4 @@
 node {
-    checkout scm
-
     docker.image('golang:1.15-alpine').inside {
         stage('lint-dockerfile') {
             sh 'curl -fsSL https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64 -o hadolint'
