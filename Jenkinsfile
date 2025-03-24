@@ -1,22 +1,35 @@
-node {
-    checkout scm
-    environment {
-        DOCKER_HOST = "tcp://192.168.49.2:2375"
+pipeline {
+    agent any
+
+    tools {
+      go 'go1.24.1'
     }
 
-    docker.image('golang:1.15-alpine').inside {
-        stage('lint-dockerfile') {
-            sh 'curl -fsSL https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64 -o hadolint'
-            sh 'chmod +x hadolint'
-            sh './hadolint Dockerfile'
+    stages {
+        stage('Checkout Code') {
+            steps {
+                checkout scm
+            }
         }
 
-        stage('test-app') {
-            sh 'go test -v -short --count=1 $(go list ./...)'
+        stage('Lint Dockerfile') {
+            steps {
+                sh 'curl -fsSL https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64 -o hadolint'
+                sh 'chmod +x hadolint'
+                sh './hadolint Dockerfile'
+            }
         }
 
-        stage('build-app-karsajobs') {
-            sh './build_push_image_karsajobs.sh'
+        stage('Test App') {
+            steps {
+                sh 'go test -v -short --count=1 $(go list ./...)'
+            }
+        }
+
+        stage('Build and Push Image') {
+            steps {
+                sh './build_push_image_karsajobs.sh'
+            }
         }
     }
 }
