@@ -28,7 +28,12 @@ pipeline {
 
         stage('Build and Push Image') {
             steps {
-                sh './build_push_image_karsajobs.sh'
+                withCredentials([string(credentialsId: 'github-pat', variable: 'GITHUB_TOKEN')]) {
+                  sh '''
+                  export CR_PAT=$GITHUB_TOKEN
+                  ./build_push_image_karsajobs.sh
+                  ''' 
+                }
             }
         }
     }
