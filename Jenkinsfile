@@ -1,4 +1,9 @@
 node {
+    checkout scm
+    environment {
+        DOCKER_HOST = "tcp://192.168.49.2:2375"
+    }
+
     docker.image('golang:1.15-alpine').inside {
         stage('lint-dockerfile') {
             sh 'curl -fsSL https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64 -o hadolint'
