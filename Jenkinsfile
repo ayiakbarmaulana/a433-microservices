@@ -18,6 +18,7 @@ pipeline {
 
         stage('Build and Push Image') {
             steps {
+                // menggunakan env global variable pada jenkins dengan key github-pat
                 withCredentials([string(credentialsId: 'github-pat', variable: 'GITHUB_TOKEN')]) {
                   sh '''
                   export CR_PAT=$GITHUB_TOKEN
